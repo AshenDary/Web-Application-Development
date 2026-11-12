@@ -6,5 +6,6 @@ coverage/
 .env.*
 !.env.example
 npm-debug.log*
+*.log
 .mongodb-data/
 .mongodb.log
