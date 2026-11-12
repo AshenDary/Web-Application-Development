@@ -1,0 +1,1 @@
+import mongoose from 'mongoose'; export async function connectDb(uri = process.env.MONGODB_URI) { if (!uri || uri.includes('your_mongodb')) throw new Error('MONGODB_URI is required'); await mongoose.connect(uri); }
