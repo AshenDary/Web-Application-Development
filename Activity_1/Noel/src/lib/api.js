@@ -1,0 +1,3 @@
+const base = import.meta.env.VITE_API_URL || 'http://localhost:5000/api';
+export async function api(path, options = {}) { const response = await fetch(`${base}${path}`, { credentials: 'include', headers: { 'Content-Type': 'application/json', ...options.headers }, ...options }); const data = await response.json().catch(() => ({})); if (!response.ok) throw new Error(data.message || 'Request failed'); return data; }
+export const activity = (action, metadata = {}) => api('/activity', { method: 'POST', body: JSON.stringify({ action, metadata, sessionId: sessionStorage.getItem('stashSession') || crypto.randomUUID() }) }).catch(() => {});

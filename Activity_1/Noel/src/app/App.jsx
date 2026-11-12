@@ -1,33 +1,4 @@
-import { useState } from 'react';
-import Navbar from '../components/layout/Navbar';
-import Marketplace from '../pages/Marketplace';
-import LootBag from '../pages/LootBag';
-import Vault from '../pages/Vault';
-import Rewards from '../pages/Rewards';
-
-export default function App() {
-  const [currentView, setCurrentView] = useState('marketplace');
-
-  const renderView = () => {
-    switch (currentView) {
-      case 'hotdrops':
-        return <Marketplace />;
-      case 'vault':
-        return <Vault />;
-      case 'rewards':
-        return <Rewards />;
-      case 'lootbag':
-        return <LootBag />;
-      case 'marketplace':
-      default:
-        return <Marketplace />;
-    }
-  };
-
-  return (
-    <div className="crt-overlay min-h-screen bg-black text-zinc-100">
-      <Navbar currentView={currentView} setCurrentView={setCurrentView} />
-      <main className="mx-auto max-w-7xl px-4 py-6 lg:px-8">{renderView()}</main>
-    </div>
-  );
-}
+import { BrowserRouter, Navigate, Route, Routes } from 'react-router-dom';
+import Navbar from '../components/layout/Navbar'; import { AuthProvider } from '../context/AuthContext'; import { CartProvider } from '../context/CartContext'; import { AdminRoute, ProtectedRoute } from '../components/Routes';
+import Marketplace from '../pages/Marketplace'; import HotDrops from '../pages/HotDrops'; import ProductDetails from '../pages/ProductDetails'; import Cart from '../pages/Cart'; import Orders from '../pages/Orders'; import Rewards from '../pages/Rewards'; import Login from '../pages/Login'; import Register from '../pages/Register'; import Admin from '../pages/Admin';
+export default function App() { return <BrowserRouter><AuthProvider><CartProvider><Navbar /><main className="shell"><Routes><Route path="/" element={<Navigate to="/marketplace" replace />} /><Route path="/marketplace" element={<Marketplace />} /><Route path="/hot-drops" element={<HotDrops />} /><Route path="/products/:id" element={<ProductDetails />} /><Route path="/cart" element={<Cart />} /><Route path="/rewards" element={<Rewards />} /><Route path="/login" element={<Login />} /><Route path="/register" element={<Register />} /><Route element={<ProtectedRoute />}><Route path="/orders" element={<Orders />} /></Route><Route element={<AdminRoute />}><Route path="/admin/:section" element={<Admin />} /></Route><Route path="*" element={<Navigate to="/marketplace" replace />} /></Routes></main></CartProvider></AuthProvider></BrowserRouter>; }
