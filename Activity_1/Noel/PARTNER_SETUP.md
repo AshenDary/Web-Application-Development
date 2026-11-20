@@ -13,10 +13,8 @@ git checkout feature/backend-mongodb
 ## 2. Install packages
 
 ```bash
-cd Activity_1/Noel
-npm install
-cd server
-npm install
+npm --prefix Activity_1/Noel/Frontend install
+npm --prefix Activity_1/Noel/Backend/Server install
 ```
 
 ## 3. Install or connect MongoDB
@@ -43,19 +41,17 @@ Local MongoDB is only on that computer. Use Atlas if you both need the same prod
 Copy the examples. These files are ignored by Git and must never be committed or sent in chat.
 
 ```bash
-cd Activity_1/Noel
-cp .env.example .env
-cd server
-cp .env.example .env
+cp Activity_1/Noel/Frontend/.env.example Activity_1/Noel/Frontend/.env
+cp Activity_1/Noel/Backend/Server/.env.example Activity_1/Noel/Backend/Server/.env
 ```
 
-Set `Activity_1/Noel/.env`:
+Set `Activity_1/Noel/Frontend/.env`:
 
 ```env
 VITE_API_URL=http://127.0.0.1:5055/api
 ```
 
-Set `Activity_1/Noel/server/.env`:
+Set `Activity_1/Noel/Backend/Server/.env`:
 
 ```env
 PORT=5055
@@ -79,8 +75,7 @@ openssl rand -hex 48
 The seed creates an admin account, 42 products, active hot drops, and rewards. It is safe to run more than once.
 
 ```bash
-cd Activity_1/Noel/server
-npm run seed
+npm --prefix Activity_1/Noel/Backend/Server run seed
 ```
 
 Log in with the `SEED_ADMIN_EMAIL` and `SEED_ADMIN_PASSWORD` values you chose.
@@ -92,15 +87,13 @@ Open two terminals.
 Terminal 1:
 
 ```bash
-cd Activity_1/Noel/server
-npm start
+npm --prefix Activity_1/Noel/Backend/Server start
 ```
 
 Terminal 2:
 
 ```bash
-cd Activity_1/Noel
-npm run dev -- --host 127.0.0.1 --port 5175
+npm --prefix Activity_1/Noel/Frontend run dev -- --host 127.0.0.1 --port 5175
 ```
 
 Open http://127.0.0.1:5175.
@@ -110,11 +103,11 @@ Open http://127.0.0.1:5175.
 - **Connection refused:** confirm both terminals show they are running and the URLs/ports match the `.env` files.
 - **CORS error:** `CLIENT_ORIGIN` must exactly match the Vite URL, including port.
 - **Database connection failed:** check Atlas network access, credentials, and the connection string.
-- **bcrypt module error:** run `npm rebuild bcrypt` inside `server`.
+- **bcrypt module error:** run `npm --prefix Activity_1/Noel/Backend/Server rebuild bcrypt`.
 - **Port already in use:** select unused ports and update `PORT`, `VITE_API_URL`, and `CLIENT_ORIGIN` to match.
 
 ## Before submission
 
 - Verify `.env`, `node_modules`, `dist`, logs, and database data are not committed.
 - Take screenshots of the marketplace, hot drops, cart, login/register, rewards, orders, admin pages, and Atlas collections.
-- Run `npm run build` in `Activity_1/Noel`.
+- Run `npm --prefix Activity_1/Noel/Frontend run build`.

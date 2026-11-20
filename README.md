@@ -8,10 +8,10 @@ React, Vite, Tailwind CSS, Express, MongoDB/Mongoose, JWT cookies, bcrypt, Zod, 
 
 ## Setup
 
-1. Copy `Activity_1/Noel/.env.example` to `.env` and set `VITE_API_URL`.
-2. Copy `Activity_1/Noel/server/.env.example` to `.env`, then set `MONGODB_URI`, `JWT_SECRET`, `SEED_ADMIN_EMAIL`, and `SEED_ADMIN_PASSWORD`.
-3. Run `npm install` in `Activity_1/Noel` and `Activity_1/Noel/server`.
-4. Run `npm run seed` in `server`, then start `npm run dev` in both folders.
+1. Copy `Activity_1/Noel/Frontend/.env.example` to `Activity_1/Noel/Frontend/.env`.
+2. Copy `Activity_1/Noel/Backend/Server/.env.example` to `Activity_1/Noel/Backend/Server/.env`, then set `MONGODB_URI`, `JWT_SECRET`, `SEED_ADMIN_EMAIL`, and `SEED_ADMIN_PASSWORD`.
+3. Run `npm install` in `Activity_1/Noel/Frontend` and `Activity_1/Noel/Backend/Server`.
+4. Run `npm --prefix Activity_1/Noel/Backend/Server run seed`, then start the frontend and backend development servers in separate terminals.
 
 | Variable | Purpose |
 | --- | --- |
@@ -23,7 +23,7 @@ React, Vite, Tailwind CSS, Express, MongoDB/Mongoose, JWT cookies, bcrypt, Zod, 
 
 ## Scripts
 
-Frontend: `npm run dev`, `npm run build`. Server: `npm run dev`, `npm start`, `npm run seed`, `npm test`.
+Frontend (`Activity_1/Noel/Frontend`): `npm run dev`, `npm run build`. Backend (`Activity_1/Noel/Backend/Server`): `npm run dev`, `npm start`, `npm run seed`, `npm test`.
 
 ## API
 
