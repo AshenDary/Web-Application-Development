@@ -1,0 +1,1 @@
+import mongoose from 'mongoose'; export default mongoose.model('Reward',new mongoose.Schema({name:{type:String,required:true},description:{type:String,required:true},pointsRequired:{type:Number,required:true,min:0}}));

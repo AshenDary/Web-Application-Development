@@ -1,0 +1,33 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root { color-scheme: dark; }
+  body { @apply m-0 min-w-[320px] bg-ink font-sans text-zinc-100 antialiased; }
+  button, input, select { font: inherit; }
+  button { @apply focus:outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-ink; }
+}
+
+@layer components {
+  .shell { @apply mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8 lg:py-12; }
+  .card { @apply rounded-ui border border-zinc-800 bg-zinc-950/80; }
+  .control { @apply w-full rounded-ui border border-line bg-ink/70 px-3.5 py-2.5 text-sm text-zinc-100 outline-none transition placeholder:text-zinc-500 hover:border-zinc-500 focus:border-accent focus:ring-2 focus:ring-accent/15; }
+  .btn { @apply inline-flex items-center justify-center gap-2 rounded-ui px-4 py-2.5 text-sm font-semibold transition duration-200 disabled:cursor-not-allowed disabled:opacity-50; }
+  .btn-primary { @apply btn bg-accent text-slate-950 hover:bg-emerald-200; }
+  .btn-secondary { @apply btn border border-line bg-panel text-zinc-100 hover:-translate-y-0.5 hover:border-zinc-500 hover:bg-zinc-800; }
+  .eyebrow { @apply text-xs font-semibold tracking-[0.16em] text-accent; }
+}
+
+@keyframes recommendation-scroll {
+  from { transform: translateX(0); }
+  to { transform: translateX(-50%); }
+}
+
+.recommendation-mask { overflow: hidden; }
+.recommendation-rail { display: flex; width: max-content; gap: 1.25rem; animation: recommendation-scroll 38s linear infinite; }
+.recommendation-mask:hover .recommendation-rail { animation-play-state: paused; }
+
+@media (prefers-reduced-motion: reduce) {
+  .recommendation-rail { animation: none; }
+}
