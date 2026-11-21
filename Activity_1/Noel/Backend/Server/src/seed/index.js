@@ -36,7 +36,7 @@ async function run() {
 		name: item[0], slug: slug(item[0]), description: item[8], category: item[1], rarity: item[2], price: item[3], stock: item[4], imageUrl: `/products/${item[5]}`, status: item[6], heat: item[7], blackTier: false, isActive: true, isHotDrop: index < 4, dropStartsAt: new Date(), dropEndsAt: new Date(Date.now() + (index + 1) * 86400000), createdBy: admin._id,
 	}));
 	for (const product of products) await Product.updateOne({ slug: product.slug }, { $set: product }, { upsert: true });
-	for (const reward of [['Member credit', 'Credit for a future order', 100], ['Priority access', 'Early access to limited releases', 500], ['Delivery upgrade', 'Complimentary standard delivery', 1000], ['Collector service', 'Personal shopping support', 2500], ['Private preview', 'Invitation to a private preview', 5000]]) await Reward.updateOne({ name: reward[0] }, { $set: { name: reward[0], description: reward[1], pointsRequired: reward[2] } }, { upsert: true });
+	for (const reward of [['Member credit', 'Credit for a future order', 100], ['Delivery upgrade', 'Complimentary standard delivery', 1000], ['Private preview', 'Invitation to a private preview', 5000]]) await Reward.updateOne({ name: reward[0] }, { $set: { name: reward[0], description: reward[1], pointsRequired: reward[2] } }, { upsert: true });
 	console.log('Seed complete');
 	process.exit();
 }
