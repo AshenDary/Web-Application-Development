@@ -6,10 +6,11 @@ import { validate } from '../middleware/validate.js';
 import { logActivity } from '../utils/activity.js';
 
 const router = Router();
+const retiredRewards = ['Priority access', 'Collector service'];
 
 router.get('/rewards', optionalAuth, async (req, res, next) => {
 	try {
-		const rewards = await Reward.find().sort({ pointsRequired: 1 });
+		const rewards = await Reward.find({ name: { $nin: retiredRewards } }).sort({ pointsRequired: 1 });
 		res.json({
 			rewards: rewards.map((reward) => ({
 				...reward.toObject(),

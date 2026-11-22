@@ -1,5 +1,5 @@
-import { createContext, useContext, useEffect, useState } from 'react';
-import { CheckCircle2 } from 'lucide-react';
+import { createContext, useContext, useState } from 'react';
+import CartNotice from '../components/ui/CartNotice';
 import { activity } from '../lib/api';
 
 const Cart = createContext(null);
@@ -8,12 +8,6 @@ export const useCart = () => useContext(Cart);
 export function CartProvider({ children }) {
 	const [items, setItems] = useState([]);
 	const [notice, setNotice] = useState('');
-
-	useEffect(() => {
-		if (!notice) return undefined;
-		const timeout = window.setTimeout(() => setNotice(''), 3000);
-		return () => window.clearTimeout(timeout);
-	}, [notice]);
 
 	const add = (product) => {
 		setItems((currentItems) => {
@@ -32,11 +26,18 @@ export function CartProvider({ children }) {
 			: currentItems.filter((item) => item._id !== id)
 	));
 
-	return <Cart.Provider value={{ items, add, update, clear: () => setItems([]) }}>
+	const selectItems = (ids, selected) => {
+		const selection = new Set(ids);
+		setItems((current) => current.map((item) => selection.has(item._id) ? { ...item, selected } : item));
+	};
+
+	const removeItems = (ids) => {
+		const removal = new Set(ids);
+		setItems((current) => current.filter((item) => !removal.has(item._id)));
+	};
+
+	return <Cart.Provider value={{ items, add, update, selectItems, removeItems }}>
 		{children}
-		{notice && <div role="status" aria-live="polite" className="fixed bottom-5 right-5 z-50 flex max-w-[calc(100vw-2.5rem)] items-center gap-3 rounded-ui border border-emerald-400/30 bg-zinc-950/95 p-4 text-sm text-zinc-100 shadow-card">
-			<CheckCircle2 aria-hidden="true" className="shrink-0 text-emerald-300" size={19}/>
-			<span>{notice}</span>
-		</div>}
+		{notice && <CartNotice message={notice} onDismiss={() => setNotice('')} />}
 	</Cart.Provider>;
 }

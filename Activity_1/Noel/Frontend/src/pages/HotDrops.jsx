@@ -1,2 +1,47 @@
-import { useEffect, useState } from 'react'; import { api } from '../lib/api'; import { useCart } from '../context/CartContext'; import { EmptyState, ErrorMessage, PageHeader, ProductCard, Spinner } from '../components/ui';
-export default function HotDrops() { const [items,setItems]=useState(null),[error,setError]=useState(''); const {add}=useCart(); useEffect(()=>{api('/products/hot-drops').then(r=>setItems(r.products)).catch(e=>setError(e.message));},[]); return <><PageHeader title="Hot drops" eyebrow="Private release window" /><section className="mb-7 border-l-2 border-amber-300/70 bg-zinc-900/50 px-5 py-4"><p className="font-medium text-zinc-100">The window is closing. These assets are moving to private vaults.</p><p className="mt-1 max-w-3xl text-sm leading-6 text-zinc-400">Once secured by collectors, they disappear from public listings. Secure your allocation before the market shifts.</p></section>{error&&<ErrorMessage>{error}</ErrorMessage>}{!items?<Spinner/>:items.length?<div className="space-y-4">{items.map(p=><div key={p._id} className="grid gap-4 rounded-ui border border-zinc-800 bg-zinc-950/80 p-3 md:grid-cols-[280px_1fr]"><ProductCard product={p} onAdd={add}/><div className="p-4"><p className="font-mono text-sm text-amber-200">Ends {new Date(p.dropEndsAt).toLocaleString()}</p><h2 className="mt-2 text-xl">Limited availability</h2><p className="mt-2 text-zinc-400">{p.stock} remaining</p></div></div>)}</div>:<EmptyState>No active drops right now.</EmptyState>}</> }
+import { useEffect, useState } from 'react';
+import { api } from '../lib/api';
+import { useCart } from '../context/CartContext';
+import { EmptyState, ErrorMessage, PageHeader, ProductCard, Spinner } from '../components/ui';
+
+const endTime = new Intl.DateTimeFormat(undefined, {
+  dateStyle: 'medium',
+  timeStyle: 'short',
+});
+
+export default function HotDrops() {
+  const [items, setItems] = useState(null);
+  const [error, setError] = useState('');
+  const { add } = useCart();
+
+  useEffect(() => {
+    const controller = new AbortController();
+    api('/products/hot-drops', { signal: controller.signal })
+      .then(({ products }) => setItems(products))
+      .catch((requestError) => {
+        if (!controller.signal.aborted) setError(requestError.message);
+      });
+    return () => controller.abort();
+  }, []);
+
+  return (
+    <>
+      <PageHeader title="Hot drops" />
+      {error ? <div role="alert"><ErrorMessage>{error}</ErrorMessage></div>
+        : !items ? <Spinner label="Loading hot drops…" />
+        : items.length === 0 ? <EmptyState>No active drops right now.</EmptyState>
+        : (
+          <ul className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+            {items.map((product) => (
+              <li key={product._id} className="min-w-0">
+                <ProductCard product={product} onAdd={add}>
+                  <p className="mb-4 border-t border-zinc-800 pt-3 text-sm text-zinc-300">
+                    Ends <time dateTime={product.dropEndsAt}>{endTime.format(new Date(product.dropEndsAt))}</time>
+                  </p>
+                </ProductCard>
+              </li>
+            ))}
+          </ul>
+        )}
+    </>
+  );
+}

@@ -1,22 +1,47 @@
 import { Link } from 'react-router-dom';
-import { ArrowRight, PackageOpen } from 'lucide-react';
+import { PackageOpen, ShoppingBag } from 'lucide-react';
 import { formatPeso } from '../../lib/currency';
+import { PixelFile } from './PixelIcons';
 
 export const Button = ({ children, variant = 'primary', ...props }) => <button className={variant === 'primary' ? 'btn-primary' : 'btn-secondary'} {...props}>{children}</button>;
 export const Input = (props) => <input className="control" {...props} />;
 export const Select = ({ children, ...props }) => <select className="control" {...props}>{children}</select>;
-export const Badge = ({ children, tone = 'default' }) => <span className={`inline-flex rounded-full px-2.5 py-1 text-xs font-medium ${tone === 'good' ? 'bg-emerald-400/10 text-emerald-200 ring-1 ring-inset ring-emerald-400/20' : tone === 'warn' ? 'bg-amber-400/10 text-amber-100 ring-1 ring-inset ring-amber-300/20' : 'bg-zinc-700/70 text-zinc-200'}`}>{children}</span>;
-export const PageHeader = ({ title, eyebrow, children }) => <div className="mb-7 flex flex-wrap items-end justify-between gap-4"><div>{eyebrow && <p className="eyebrow mb-2">{eyebrow}</p>}<h1 className="text-3xl font-semibold tracking-tight sm:text-4xl">{title}</h1></div>{children}</div>;
-export const Spinner = ({ label = 'Loading products…' }) => <div className="py-16 text-center text-zinc-400"><span className="inline-block h-7 w-7 animate-spin rounded-full border-2 border-zinc-600 border-t-accent"/><p className="mt-3 text-sm">{label}</p></div>;
+export const Badge = ({ children, tone = 'default' }) => <span className="desktop-label" data-tone={tone}>{children}</span>;
+export const PageHeader = ({ title, eyebrow, icon: Icon, children }) => <div className="desktop-page-heading"><div>{eyebrow && <p className="eyebrow mb-1">{eyebrow}</p>}<h1 className="flex items-center gap-2 text-3xl font-semibold">{Icon && <Icon size={24} aria-hidden="true" />}{title}</h1></div>{children}</div>;
+export const Spinner = ({ label = 'Loading products…' }) => <div className="py-16 text-center text-zinc-400"><span className="inline-block h-7 w-7 desktop-loader animate-spin border-2"/><p className="mt-3 text-sm">{label}</p></div>;
 export const EmptyState = ({ children = 'Nothing to show.' }) => <div className="card grid min-h-48 place-items-center p-8 text-center"><div><PackageOpen className="mx-auto mb-3 text-zinc-500" size={32}/><p className="text-zinc-400">{children}</p></div></div>;
-export const ErrorMessage = ({ children }) => <p className="mb-5 rounded-ui border border-red-400/20 bg-red-950/50 p-3.5 text-sm text-red-200">{children}</p>;
+export const ErrorMessage = ({ children }) => <p className="mb-5 desktop-error p-3.5 text-sm">{children}</p>;
 
-export const ProductCard = ({ product, onAdd }) => {
+export const ProductCard = ({ product, onAdd, children, featured = false }) => {
   const stockText = product.stock === 0 ? 'Out of stock' : product.stock < 5 ? `${product.stock} left` : 'In stock';
   const stockTone = product.stock === 0 || product.stock < 5 ? 'warn' : 'good';
   const heatTone = product.heat >= 85 ? 'text-rose-300' : product.heat >= 65 ? 'text-amber-200' : 'text-zinc-400';
-  return <article className="card group flex h-full flex-col overflow-hidden transition duration-300 hover:-translate-y-0.5 hover:border-zinc-600">
-    <Link to={`/products/${product._id}`} className="relative block overflow-hidden bg-ink"><img className="h-52 w-full object-cover transition duration-500 group-hover:scale-105" src={product.imageUrl} alt={product.name}/><span className="absolute left-3 top-3 rounded-full bg-ink/75 px-2.5 py-1 text-xs font-medium capitalize text-zinc-100 backdrop-blur">{product.rarity}</span></Link>
-    <div className="flex flex-1 flex-col p-5"><div className="mb-2 flex items-start justify-between gap-3"><div><p className="text-xs font-medium text-zinc-500">{product.category}</p><Link to={`/products/${product._id}`} className="mt-1 block font-semibold leading-tight text-zinc-100 hover:text-accent">{product.name}</Link></div><span className="whitespace-nowrap font-mono text-base font-semibold">{formatPeso(product.price)}</span></div><div className="mb-3 flex items-center gap-3 font-mono text-[11px] tracking-wide"><span className="text-zinc-500">{product.status ?? 'VERIFIED'}</span>{typeof product.heat === 'number' && <span className={heatTone}>HEAT {product.heat}</span>}</div><p className="mb-5 line-clamp-2 text-sm leading-6 text-zinc-400">{product.description}</p><div className="mt-auto flex items-center justify-between gap-3"><Badge tone={stockTone}>{stockText}</Badge><Button disabled={!product.stock} onClick={() => onAdd(product)}>Add <ArrowRight size={15}/></Button></div></div>
-  </article>;
+  return (
+    <article className="card product-card">
+      <div className="product-card-titlebar">
+        <PixelFile size={15} />
+        <Link to={`/products/${product._id}`} className="product-card-link">{product.name}</Link>
+      </div>
+      <div className="product-card-photo">
+        <img src={product.imageUrl} alt={product.name} />
+        {featured && <span className="product-pick-sticker"><span><strong>STASH PICK!</strong></span></span>}
+      </div>
+      <div className="product-card-copy">
+        <div className="product-card-meta">
+          <span>{product.category} · <span className="capitalize">{product.rarity}</span></span>
+          <strong>{formatPeso(product.price)}</strong>
+        </div>
+        <p className="product-card-condition">
+          <span>{product.status ?? 'VERIFIED'}</span>
+          {typeof product.heat === 'number' && <span className={heatTone}>HEAT {product.heat}</span>}
+        </p>
+        <p className="line-clamp-2 text-sm leading-5 text-zinc-400">{product.description}</p>
+        {children}
+      </div>
+      <div className="product-card-status">
+        <Badge tone={stockTone}>{stockText}</Badge>
+        <Button disabled={!product.stock} onClick={() => onAdd(product)}><ShoppingBag size={15} aria-hidden="true" /> Add</Button>
+      </div>
+    </article>
+  );
 };
