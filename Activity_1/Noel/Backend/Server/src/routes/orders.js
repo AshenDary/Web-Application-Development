@@ -40,26 +40,44 @@ async function applyOrder(req, session, state) {
 		}
 
 		state.reservations.push({ productId: product._id, qty: item.qty });
-		items.push({ product: product._id, name: product.name, status: product.status || 'VERIFIED', unitPrice: product.price, qty: item.qty });
+		items.push({ product: product._id, name: product.name, status: product.status || 'VERIFIED', unitPrice: product.price, qty: item.qty, seller: product.createdBy });
 	}
 
 	const subtotal = items.reduce((sum, item) => sum + item.unitPrice * item.qty, 0);
 	const brokerageFee = Math.round(subtotal * 0.025 * 100) / 100;
 	const total = subtotal + brokerageFee;
-	const points = Math.floor(total / 100);
+	const points = req.user.role === 'seller' ? 0 : Math.floor(total / 100);
 	const orderData = { user: req.user._id, items, subtotal, brokerageFee, total, status: 'completed', paymentStatus: 'confirmed', fulfillmentStatus: 'scheduled', transactionId: `TRX-${randomUUID().replace(/-/g, '').slice(0, 8).toUpperCase()}-BLK`, brokerId: `BRK-${randomUUID().replace(/-/g, '').slice(0, 6).toUpperCase()}`, estimatedDeliveryAt: new Date(Date.now() + 3 * 86400000), pointsEarned: points };
+	// Accounts created before wallets were introduced receive the same starting balance as new accounts.
+	await User.updateOne({ _id: req.user._id, balance: { $exists: false } }, { $set: { balance: 100000 } }, session ? { session } : undefined);
+	const buyer = await User.findOneAndUpdate(
+		{ _id: req.user._id, balance: { $gte: total } },
+		{ $inc: { balance: -total, points } },
+		{ new: true, ...(session ? { session } : {}) },
+	);
+	if (!buyer) throw Object.assign(new Error('Insufficient account balance'), { status: 400 });
+	state.buyerCharged = total;
+	const sellerCredits = new Map();
+	for (const item of items) {
+		if (!item.seller) continue;
+		const sellerId = item.seller.toString();
+		sellerCredits.set(sellerId, (sellerCredits.get(sellerId) || 0) + item.unitPrice * item.qty);
+	}
+	for (const [sellerId, amount] of sellerCredits) {
+		await User.updateOne({ _id: sellerId, balance: { $exists: false } }, { $set: { balance: 100000 } }, session ? { session } : undefined);
+		await User.updateOne({ _id: sellerId, role: 'seller' }, { $inc: { balance: amount } }, session ? { session } : undefined);
+	}
+	state.sellerCredits = sellerCredits;
 
 	if (session) {
 		[state.order] = await Order.create([orderData], { session });
-		await User.findByIdAndUpdate(req.user._id, { $inc: { points } }).session(session);
 	} else {
 		state.order = await Order.create(orderData);
-		await User.findByIdAndUpdate(req.user._id, { $inc: { points } });
 	}
 }
 
 async function applyOrderWithoutTransactions(req) {
-	const state = { order: null, reservations: [] };
+	const state = { order: null, reservations: [], buyerCharged: 0, sellerCredits: new Map() };
 
 	try {
 		await applyOrder(req, null, state);
@@ -73,6 +91,8 @@ async function applyOrderWithoutTransactions(req) {
 				{ $inc: { stock: reservation.qty } },
 			);
 		}
+		if (state.buyerCharged) await User.updateOne({ _id: req.user._id }, { $inc: { balance: state.buyerCharged, points: -(req.user.role === 'seller' ? 0 : Math.floor(state.buyerCharged / 100)) } });
+		for (const [sellerId, amount] of state.sellerCredits) await User.updateOne({ _id: sellerId }, { $inc: { balance: -amount } });
 
 		throw error;
 	}
@@ -88,7 +108,7 @@ router.post('/', requireAuth, validate(schema), async (req, res, next) => {
 			const session = await mongoose.startSession();
 			try {
 				await session.withTransaction(async () => {
-					const state = { order: null, reservations: [] };
+					const state = { order: null, reservations: [], buyerCharged: 0, sellerCredits: new Map() };
 					await applyOrder(req, session, state);
 					order = state.order;
 				});

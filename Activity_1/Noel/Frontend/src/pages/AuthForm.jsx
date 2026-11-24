@@ -18,19 +18,21 @@ export default function AuthForm({ register = false }) {
   const [showPassword, setShowPassword] = useState(false);
   const [pending, setPending] = useState(false);
   const [error, setError] = useState('');
+  const [role, setRole] = useState('user');
   const title = register ? 'Create account' : 'Log in';
   const frame = useWindowMotion(title);
 
   async function submit(event) {
     event.preventDefault();
     if (pending) return;
-    const { name, email, password, role } = Object.fromEntries(new FormData(event.currentTarget));
+    const { name, email, password } = Object.fromEntries(new FormData(event.currentTarget));
     setError('');
     setPending(true);
     try {
-      if (register) await signUp({ name, email, password, role });
-      else await login({ email, password, role });
-      navigate(!register && role === 'seller' ? '/seller' : (location.state?.from || '/marketplace'), { replace: true });
+      const authenticatedUser = register
+        ? await signUp({ name, email, password, role })
+        : await login({ email, password, role });
+      navigate(authenticatedUser.role === 'seller' ? '/seller' : (location.state?.from || '/marketplace'), { replace: true });
     } catch (requestError) {
       setError(requestError.message);
     } finally {
@@ -56,7 +58,7 @@ export default function AuthForm({ register = false }) {
                 <span>Name</span>
                 <input className={field} name="name" autoComplete="name" minLength={2} required />
               </label>}
-              <fieldset className="space-y-2 text-sm font-medium"><legend>{register ? 'I want to:' : 'Log in as:'}</legend><div className="flex gap-3"><label className="control flex items-center gap-2"><input type="radio" name="role" value="user" defaultChecked /> Buyer</label><label className="control flex items-center gap-2"><input type="radio" name="role" value="seller" /> Seller</label></div></fieldset>
+              <fieldset className="space-y-2 text-sm font-medium"><legend>{register ? 'I want to:' : 'Log in as:'}</legend><div className="auth-role-options"><button type="button" className={`auth-role-option ${role === 'user' ? 'is-selected' : ''}`} aria-pressed={role === 'user'} onClick={() => setRole('user')}>Buyer</button><button type="button" className={`auth-role-option ${role === 'seller' ? 'is-selected' : ''}`} aria-pressed={role === 'seller'} onClick={() => setRole('seller')}>Seller</button></div></fieldset>
               <label className="block space-y-2 text-sm font-medium">
                 <span>Email</span>
                 <input className={field} name="email" type="email" autoComplete={register ? 'email' : 'username'} required />

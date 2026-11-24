@@ -39,9 +39,10 @@ export default function HotDrops() {
         : !items ? <Spinner label="Loading hot drops…" />
         : items.length === 0 ? <EmptyState>No active drops right now.</EmptyState>
         : (
-          <ul className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
-            {items.map((product) => (
-              <li key={product._id} className="min-w-0">
+          <div className="hot-drops-marquee" aria-label="Continuously scrolling hot drops">
+            <ul className="hot-drops-track">
+              {[...items, ...items].map((product, index) => (
+              <li key={`${product._id}-${index}`} className="hot-drops-card min-w-0" aria-hidden={index >= items.length || undefined}>
                 <ProductCard product={product} onAdd={add}>
                   <p className="mb-4 border-t border-zinc-800 pt-3 text-sm text-black">
                     Ends <time dateTime={product.dropEndsAt}>{endTime.format(new Date(product.dropEndsAt))}</time>
@@ -49,7 +50,8 @@ export default function HotDrops() {
                 </ProductCard>
               </li>
             ))}
-          </ul>
+            </ul>
+          </div>
         )}
     </>
   );

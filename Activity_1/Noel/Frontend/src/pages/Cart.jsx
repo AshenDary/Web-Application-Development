@@ -39,7 +39,7 @@ function CartItem({ item, disabled, onSelect, onUpdate, onRemove }) {
 
 export default function Cart() {
   const { items, update, selectItems, removeItems, refreshStocks } = useCart();
-  const { user, loading } = useAuth();
+  const { user, loading, refreshUser } = useAuth();
   const [error, setError] = useState('');
   const [pending, setPending] = useState(false);
   const navigate = useNavigate();
@@ -61,12 +61,13 @@ export default function Cart() {
     setError('');
     setPending(true);
     try {
-      await api('/orders', {
+      const { order: completedOrder } = await api('/orders', {
         method: 'POST',
         body: JSON.stringify({ items: selected.map((item) => ({ productId: item._id, qty: item.qty })) }),
       });
       removeItems(selected.map((item) => item._id));
-      navigate('/orders');
+      await refreshUser();
+      navigate(`/orders/${completedOrder._id}`);
     } catch (requestError) {
       setError(requestError.message);
       if (requestError.message === 'One or more products are out of stock') refreshStocks();
@@ -101,7 +102,6 @@ export default function Cart() {
               <div className="cart-totals" aria-live="polite">
                 <p>Total ({selectedCount} {selectedCount === 1 ? 'item' : 'items'}) <strong>{formatPeso(total)}</strong></p>
                 <p className="cart-fee">Brokerage fee included: {formatPeso(brokerageFee)}</p>
-                {user?.points >= 250 && <p className="cart-fee">Silent Checkout active</p>}
               </div>
               {user || loading || !selected.length
                 ? <Button type="button" disabled={pending || loading || !selected.length} onClick={order}>{pending ? 'Placing order…' : 'Check out'}</Button>

@@ -80,7 +80,7 @@
   }
   .btn-primary { @apply btn bg-accent; color: #000000; }
   .btn-primary:hover { background: var(--gold-hover); }
-  .btn-secondary { @apply btn bg-panel; }
+  .btn-secondary { @apply btn bg-white text-black; }
   .btn-secondary:hover { background: var(--paper); }
   .btn:active:not(:disabled) { transform: translate(1px, 1px); box-shadow: inset 1px 1px 0 var(--bevel); }
   .eyebrow { color: var(--muted); font: 600 .875rem/1.3 var(--pixel); }
@@ -294,7 +294,7 @@
   margin: auto;
   padding: .25rem;
   border: 1px solid var(--shadow);
-  background: var(--window);
+  background: #ffffff;
   color: #000000;
   box-shadow: inset 2px 2px 0 var(--paper), inset -2px -2px 0 var(--edge), 4px 4px 0 var(--shadow);
 }
@@ -327,6 +327,16 @@
 .cart-notice-message { display: flex; align-items: center; gap: .875rem; font-weight: 600; }
 .cart-notice-message svg { flex-shrink: 0; }
 .cart-notice-ok { min-width: 6rem; }
+.auth-role-options { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: .75rem; }
+.auth-role-option { min-height: 2.75rem; border: 1px solid var(--edge); background: var(--paper); color: #000; box-shadow: inset 1px 1px 0 #fff, inset -1px -1px 0 var(--bevel); font-weight: 700; }
+.auth-role-option:hover, .auth-role-option.is-selected { background: #fff; box-shadow: inset 2px 2px 0 var(--gold), inset -2px -2px 0 var(--edge); }
+.hot-drops-marquee { overflow: hidden; padding-block: .25rem 1rem; }
+.hot-drops-track { display: flex; width: max-content; gap: 1.25rem; animation: hot-drops-scroll 48s linear infinite; }
+.hot-drops-card { width: min(19rem, calc(100vw - 3rem)); flex: 0 0 auto; }
+.hot-drops-marquee:hover .hot-drops-track { animation-play-state: paused; }
+@keyframes hot-drops-scroll { to { transform: translateX(calc(-50% - .625rem)); } }
+@media (prefers-reduced-motion: reduce) { .hot-drops-marquee { overflow-x: auto; } .hot-drops-track { animation: none; } }
+
 .receipt-actions {
   display: flex;
   flex-wrap: wrap;

@@ -4,7 +4,6 @@ export async function restockProducts() {
 	const result = await Product.updateMany(
 		{ isActive: true, baseStock: { $exists: true }, $expr: { $ne: ['$stock', '$baseStock'] } },
 		[{ $set: { stock: '$baseStock' } }],
-		{ updatePipeline: true },
 	);
 	return result.modifiedCount;
 }

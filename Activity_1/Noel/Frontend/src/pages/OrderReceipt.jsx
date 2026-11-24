@@ -74,7 +74,7 @@ function Receipt({ id }) {
                   <h2 className="mt-2 font-mono text-xl font-semibold text-black">{order.transactionId || receiptCode(order._id)}</h2>
                 </div>
                 <p className={`border px-3 py-2 font-mono text-xs tracking-wider ${cleared ? 'border-emerald-400/30 text-black' : 'border-amber-300/30 text-black'}`}>
-                  TRANSFER STATUS: {cleared ? 'CLEARED' : String(order.status || 'PENDING').toUpperCase()}
+                  TRANSFER STATUS: {cleared ? 'SUCCESSFUL' : String(order.status || 'PENDING').toUpperCase()}
                 </p>
               </div>
               <div className="mt-6 grid gap-4 border-t border-zinc-800 pt-5 font-mono text-xs text-black sm:grid-cols-3">
@@ -111,7 +111,7 @@ function Receipt({ id }) {
   );
 }
 
-export default function OrderReceipt() {
+export default function OrderReceipt({ sample = false }) {
   const { id } = useParams();
-  return <Receipt key={id} id={id} />;
+  return <Receipt key={sample ? 'sample' : id} id={sample ? 'sample' : id} />;
 }

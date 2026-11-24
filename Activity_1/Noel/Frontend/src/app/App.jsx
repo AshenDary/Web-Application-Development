@@ -73,7 +73,8 @@ export default function App() {
                 <Route path="/rewards" element={<Rewards />} />
                 <Route element={<ProtectedRoute />}>
                   <Route path="/orders" element={<Orders />} />
-                  <Route path="/orders/:id" element={<OrderReceipt />} />
+                <Route path="/orders/sample" element={<OrderReceipt sample />} />
+                <Route path="/orders/:id" element={<OrderReceipt />} />
                 </Route>
                 <Route element={<AdminRoute />}>
                   <Route path="/admin/:section" element={<Admin />} />

@@ -7,7 +7,7 @@ export const workspaceTabs = {
   rewards: { title: 'Rewards', icon: PixelStar },
   cart: { title: 'Shopping Cart', icon: PixelCart },
   products: { title: 'Product Details', icon: PixelFile },
-  orders: { title: 'Transfers', icon: PixelClipboard },
+  orders: { title: 'My Purchases', icon: PixelClipboard },
   admin: { title: 'Admin Console', icon: PixelGear },
   seller: { title: 'Seller Center', icon: PixelStore },
 };
