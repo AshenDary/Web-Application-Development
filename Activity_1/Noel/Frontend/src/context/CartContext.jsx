@@ -1,6 +1,6 @@
-import { createContext, useContext, useState } from 'react';
+import { createContext, useCallback, useContext, useState } from 'react';
 import CartNotice from '../components/ui/CartNotice';
-import { activity } from '../lib/api';
+import { activity, api } from '../lib/api';
 
 const Cart = createContext(null);
 export const useCart = () => useContext(Cart);
@@ -36,7 +36,22 @@ export function CartProvider({ children }) {
 		setItems((current) => current.filter((item) => !removal.has(item._id)));
 	};
 
-	return <Cart.Provider value={{ items, add, update, selectItems, removeItems }}>
+	const refreshStocks = useCallback(async (signal) => {
+		const currentItems = items;
+		const refreshedStocks = await Promise.all(currentItems.map(async (item) => {
+			try {
+				const { product } = await api(`/products/${item._id}`, { signal });
+				return [item._id, product.stock];
+			} catch {
+				return null;
+			}
+		}));
+		if (signal?.aborted) return;
+		const stockById = new Map(refreshedStocks.filter(Boolean));
+		setItems((current) => current.map((item) => stockById.has(item._id) ? { ...item, stock: stockById.get(item._id) } : item));
+	}, [items]);
+
+	return <Cart.Provider value={{ items, add, update, selectItems, removeItems, refreshStocks }}>
 		{children}
 		{notice && <CartNotice message={notice} onDismiss={() => setNotice('')} />}
 	</Cart.Provider>;

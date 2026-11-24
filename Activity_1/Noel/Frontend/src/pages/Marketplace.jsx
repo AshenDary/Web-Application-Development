@@ -77,26 +77,36 @@ export default function Marketplace() {
 
 	useEffect(() => { const nextQuery = searchParams.get('q') || ''; if (nextQuery !== q) setQ(nextQuery); }, [searchParams, q]);
 	useEffect(() => {
-		const controller = new AbortController();
 		const query = new URLSearchParams({ page: '1', limit: '12', sort });
 		if (q) query.set('q', q);
 		if (category) query.set('category', category);
 		if (rarity) query.set('rarity', rarity);
-		setData(null);
-		setError('');
-		setLoading(true);
-		api(`/products?${query}`, { signal: controller.signal })
-			.then((result) => {
-				if (!Array.isArray(result.products)) throw new Error('Unable to load products. Please try again.');
-				if (!controller.signal.aborted) setData(result);
-			})
-			.catch((requestError) => {
-				if (!controller.signal.aborted) setError(requestError.message);
-			})
-			.finally(() => {
-				if (!controller.signal.aborted) setLoading(false);
-			});
-		return () => controller.abort();
+		let controller;
+		const fetchProducts = (background = false) => {
+			controller?.abort();
+			controller = new AbortController();
+			if (!background) {
+				setData(null);
+				setError('');
+				setLoading(true);
+			}
+			api(`/products?${query}`, { signal: controller.signal })
+				.then((result) => {
+					if (!Array.isArray(result.products)) throw new Error('Unable to load products. Please try again.');
+					if (!controller.signal.aborted) setData(result);
+				})
+				.catch((requestError) => {
+					if (!background && !controller.signal.aborted) setError(requestError.message);
+				})
+				.finally(() => {
+					if (!background && !controller.signal.aborted) setLoading(false);
+				});
+		};
+		const refresh = () => { if (!document.hidden) fetchProducts(true); };
+		fetchProducts();
+		const timer = window.setInterval(refresh, 60000);
+		document.addEventListener('visibilitychange', refresh);
+		return () => { window.clearInterval(timer); document.removeEventListener('visibilitychange', refresh); controller?.abort(); };
 	}, [q, category, rarity, sort, retry]);
 
 	function setQueryValue(value) { setQ(value); setSearchParams(value ? { q: value } : {}, { replace: true }); activity('search', { q: value }); }

@@ -18,17 +18,26 @@ function Product({ id }) {
   const { add } = useCart();
 
   useEffect(() => {
-    const controller = new AbortController();
-    api(`/products/${id}`, { signal: controller.signal })
-      .then(({ product: item }) => {
-        if (controller.signal.aborted) return;
-        setProduct(item);
-        activity('product_view', { productId: id });
-      })
-      .catch((requestError) => {
-        if (!controller.signal.aborted) setError(requestError.message);
-      });
-    return () => controller.abort();
+    let controller;
+    const fetchProduct = (background = false) => {
+      controller?.abort();
+      controller = new AbortController();
+      if (!background) setError('');
+      api(`/products/${id}`, { signal: controller.signal })
+        .then(({ product: item }) => {
+          if (controller.signal.aborted) return;
+          setProduct(item);
+          if (!background) activity('product_view', { productId: id });
+        })
+        .catch((requestError) => {
+          if (!background && !controller.signal.aborted) setError(requestError.message);
+        });
+    };
+    const refresh = () => { if (!document.hidden) fetchProduct(true); };
+    fetchProduct();
+    const timer = window.setInterval(refresh, 60000);
+    document.addEventListener('visibilitychange', refresh);
+    return () => { window.clearInterval(timer); document.removeEventListener('visibilitychange', refresh); controller?.abort(); };
   }, [id]);
 
   if (error) return <div role="alert"><ErrorMessage>{error}</ErrorMessage></div>;

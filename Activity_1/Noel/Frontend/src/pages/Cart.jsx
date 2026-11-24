@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { ArrowLeft, Minus, Plus, Trash2 } from 'lucide-react';
 import { Link, useNavigate } from 'react-router-dom';
 import { api } from '../lib/api';
@@ -37,7 +37,7 @@ function CartItem({ item, disabled, onSelect, onUpdate, onRemove }) {
 }
 
 export default function Cart() {
-  const { items, update, selectItems, removeItems } = useCart();
+  const { items, update, selectItems, removeItems, refreshStocks } = useCart();
   const { user, loading } = useAuth();
   const [error, setError] = useState('');
   const [pending, setPending] = useState(false);
@@ -48,6 +48,12 @@ export default function Cart() {
   const brokerageFee = Math.round(subtotal * 0.025 * 100) / 100;
   const total = subtotal + brokerageFee;
   const allSelected = selected.length === items.length;
+
+  useEffect(() => {
+    const controller = new AbortController();
+    refreshStocks(controller.signal);
+    return () => controller.abort();
+  }, []);
 
   async function order() {
     if (pending || !user || !selected.length) return;
@@ -62,6 +68,7 @@ export default function Cart() {
       navigate('/orders');
     } catch (requestError) {
       setError(requestError.message);
+      if (requestError.message === 'One or more products are out of stock') refreshStocks();
     } finally {
       setPending(false);
     }
