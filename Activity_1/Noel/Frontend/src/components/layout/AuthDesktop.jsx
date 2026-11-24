@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { Clock3 } from 'lucide-react';
 import { Link } from 'react-router-dom';
-import { PixelBag, PixelKey } from '../ui/PixelIcons';
+import { PixelCart, PixelKey } from '../ui/PixelIcons';
 import { DiscSprite, FloppySprite, FolderSprite, InternetSprite, MailSprite, MusicSprite, NotepadSprite, WorkstationSprite } from '../ui/DesktopSprites';
 
 const clockFormat = new Intl.DateTimeFormat(undefined, { hour: 'numeric', minute: '2-digit' });
@@ -36,7 +36,7 @@ export function AuthDeskBar() {
         <span className="auth-menubar-fill" aria-hidden="true" />
         <div className="auth-menubar-tray">
           <Link to="/marketplace" aria-label="Open Marketplace" title="Marketplace" className="desktop-tool-button">
-            <PixelBag />
+            <PixelCart />
           </Link>
           <time className="auth-menubar-time" dateTime={now.toISOString()}>
             <Clock3 size={13} aria-hidden="true" /> {clockFormat.format(now)}

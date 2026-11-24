@@ -62,7 +62,7 @@ function Receipt({ id }) {
           <Button type="button" onClick={() => window.print()}><PixelPrinter size={17} /> Print receipt</Button>
         </div>
       </PageHeader>
-      {isSample && <p className="receipt-sample mb-5 border border-amber-300/25 bg-amber-300/5 p-3 font-mono text-xs text-amber-100">SAMPLE RECEIPT — FOR INTERFACE PREVIEW ONLY. NOT A PAYMENT CONFIRMATION.</p>}
+      {isSample && <p className="receipt-sample mb-5 border border-amber-300/25 bg-amber-300/5 p-3 font-mono text-xs text-black">SAMPLE RECEIPT — FOR INTERFACE PREVIEW ONLY. NOT A PAYMENT CONFIRMATION.</p>}
       <div className="receipt-station">
         <ReceiptPrinter />
         <div className="receipt-paper">
@@ -70,38 +70,38 @@ function Receipt({ id }) {
             <div className="border-b border-zinc-800 px-4 py-5 sm:px-8 sm:py-6">
               <div className="flex flex-wrap items-start justify-between gap-4">
                 <div>
-                  <p className="font-mono text-xs tracking-[0.16em] text-zinc-500">PRIVATE BROKER TERMINAL</p>
-                  <h2 className="mt-2 font-mono text-xl font-semibold text-zinc-100">{order.transactionId || receiptCode(order._id)}</h2>
+                  <p className="font-mono text-xs tracking-[0.16em] text-black">PRIVATE BROKER TERMINAL</p>
+                  <h2 className="mt-2 font-mono text-xl font-semibold text-black">{order.transactionId || receiptCode(order._id)}</h2>
                 </div>
-                <p className={`border px-3 py-2 font-mono text-xs tracking-wider ${cleared ? 'border-emerald-400/30 text-emerald-200' : 'border-amber-300/30 text-amber-100'}`}>
+                <p className={`border px-3 py-2 font-mono text-xs tracking-wider ${cleared ? 'border-emerald-400/30 text-black' : 'border-amber-300/30 text-black'}`}>
                   TRANSFER STATUS: {cleared ? 'CLEARED' : String(order.status || 'PENDING').toUpperCase()}
                 </p>
               </div>
-              <div className="mt-6 grid gap-4 border-t border-zinc-800 pt-5 font-mono text-xs text-zinc-400 sm:grid-cols-3">
-                <p>TIMESTAMP<span className="mt-1 block text-zinc-200">{order.createdAt ? new Date(order.createdAt).toLocaleString() : '—'}</span></p>
-                <p>BROKER ID<span className="mt-1 block text-zinc-200">{order.brokerId || `BRK-${order._id.slice(-6).toUpperCase()}`}</span></p>
-                <p>PAYMENT<span className="mt-1 block text-emerald-200">{String(order.paymentStatus || 'pending').toUpperCase()}</span></p>
+              <div className="mt-6 grid gap-4 border-t border-zinc-800 pt-5 font-mono text-xs text-black sm:grid-cols-3">
+                <p>TIMESTAMP<span className="mt-1 block text-black">{order.createdAt ? new Date(order.createdAt).toLocaleString() : '—'}</span></p>
+                <p>BROKER ID<span className="mt-1 block text-black">{order.brokerId || `BRK-${order._id.slice(-6).toUpperCase()}`}</span></p>
+                <p>PAYMENT<span className="mt-1 block text-black">{String(order.paymentStatus || 'pending').toUpperCase()}</span></p>
               </div>
             </div>
             <div className="px-4 py-5 sm:px-8">
-              <div className="receipt-line mb-3 border-b border-zinc-800 pb-3 font-mono text-[11px] tracking-wider text-zinc-500">
+              <div className="receipt-line mb-3 border-b border-zinc-800 pb-3 font-mono text-[11px] tracking-wider text-black">
                 <span>ASSET / STATUS</span><span>QTY</span><span>VALUE</span>
               </div>
               {items.map((item, index) => (
                 <div key={`${item.product || item.name}-${index}`} className="receipt-line border-b border-zinc-800 py-4 text-sm">
                   <div>
-                    <p className="font-medium text-zinc-100">{item.name || 'Unnamed asset'}</p>
-                    <p className="mt-1 font-mono text-[11px] text-amber-100">{item.status || 'VERIFIED'}</p>
+                    <p className="font-medium text-black">{item.name || 'Unnamed asset'}</p>
+                    <p className="mt-1 font-mono text-[11px] text-black">{item.status || 'VERIFIED'}</p>
                   </div>
-                  <p className="font-mono text-zinc-400">×{item.qty || 1}</p>
-                  <p className="font-mono text-zinc-200">{formatPeso(Number(item.unitPrice || 0) * Number(item.qty || 1))}</p>
+                  <p className="font-mono text-black">×{item.qty || 1}</p>
+                  <p className="font-mono text-black">{formatPeso(Number(item.unitPrice || 0) * Number(item.qty || 1))}</p>
                 </div>
               ))}
-              <p className="mt-5 border-l-2 border-amber-300/70 pl-3 font-mono text-xs text-zinc-400">DELIVERY: <span className="text-zinc-200">{String(order.fulfillmentStatus || 'awaiting').toUpperCase()}{order.estimatedDeliveryAt ? ` · ${new Date(order.estimatedDeliveryAt).toLocaleDateString()}` : ''}</span></p>
+              <p className="mt-5 border-l-2 border-amber-300/70 pl-3 font-mono text-xs text-black">DELIVERY: <span className="text-black">{String(order.fulfillmentStatus || 'awaiting').toUpperCase()}{order.estimatedDeliveryAt ? ` · ${new Date(order.estimatedDeliveryAt).toLocaleDateString()}` : ''}</span></p>
               <div className="ml-auto mt-6 max-w-xs space-y-3 font-mono text-sm">
-                <div className="flex justify-between text-zinc-400"><span>SUBTOTAL</span><span>{formatPeso(subtotal)}</span></div>
-                <div className="flex justify-between text-zinc-400"><span>BROKERAGE FEES</span><span>{formatPeso(brokerageFee)}</span></div>
-                <div className="flex justify-between border-t border-zinc-700 pt-3 font-semibold text-zinc-100"><span>TOTAL</span><span>{formatPeso(order.total)}</span></div>
+                <div className="flex justify-between text-black"><span>SUBTOTAL</span><span>{formatPeso(subtotal)}</span></div>
+                <div className="flex justify-between text-black"><span>BROKERAGE FEES</span><span>{formatPeso(brokerageFee)}</span></div>
+                <div className="flex justify-between border-t border-zinc-700 pt-3 font-semibold text-black"><span>TOTAL</span><span>{formatPeso(order.total)}</span></div>
               </div>
             </div>
           </article>

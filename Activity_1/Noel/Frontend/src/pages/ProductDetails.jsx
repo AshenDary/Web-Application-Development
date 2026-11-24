@@ -1,9 +1,10 @@
 import { useEffect, useState } from 'react';
-import { ArrowLeft, RotateCcw, ShoppingBag, Star, Truck } from 'lucide-react';
+import { ArrowLeft, RotateCcw, ShoppingCart, Star, Truck } from 'lucide-react';
 import { Link, useParams } from 'react-router-dom';
 import { Badge, Button, ErrorMessage, Spinner } from '../components/ui';
 import { useCart } from '../context/CartContext';
 import { activity, api } from '../lib/api';
+import { imageSrc } from '../lib/api';
 import { formatPeso } from '../lib/currency';
 
 const sampleDetails = [
@@ -18,17 +19,26 @@ function Product({ id }) {
   const { add } = useCart();
 
   useEffect(() => {
-    const controller = new AbortController();
-    api(`/products/${id}`, { signal: controller.signal })
-      .then(({ product: item }) => {
-        if (controller.signal.aborted) return;
-        setProduct(item);
-        activity('product_view', { productId: id });
-      })
-      .catch((requestError) => {
-        if (!controller.signal.aborted) setError(requestError.message);
-      });
-    return () => controller.abort();
+    let controller;
+    const fetchProduct = (background = false) => {
+      controller?.abort();
+      controller = new AbortController();
+      if (!background) setError('');
+      api(`/products/${id}`, { signal: controller.signal })
+        .then(({ product: item }) => {
+          if (controller.signal.aborted) return;
+          setProduct(item);
+          if (!background) activity('product_view', { productId: id });
+        })
+        .catch((requestError) => {
+          if (!background && !controller.signal.aborted) setError(requestError.message);
+        });
+    };
+    const refresh = () => { if (!document.hidden) fetchProduct(true); };
+    fetchProduct();
+    const timer = window.setInterval(refresh, 60000);
+    document.addEventListener('visibilitychange', refresh);
+    return () => { window.clearInterval(timer); document.removeEventListener('visibilitychange', refresh); controller?.abort(); };
   }, [id]);
 
   if (error) return <div role="alert"><ErrorMessage>{error}</ErrorMessage></div>;
@@ -37,16 +47,17 @@ function Product({ id }) {
   return (
     <article className="card product-detail">
       <div className="product-detail-photo">
-        <img src={product.imageUrl} alt={product.name} />
+        <img src={imageSrc(product.imageUrl)} alt={product.name} />
       </div>
       <div className="product-detail-copy">
-        <div className="flex flex-wrap items-center gap-3 text-sm text-zinc-400">
+        <div className="flex flex-wrap items-center gap-3 text-sm text-black">
           <span>{product.category}</span>
           <Badge><span className="capitalize">{product.rarity}</span></Badge>
         </div>
         <h1 className="mt-3 text-3xl font-semibold tracking-tight sm:text-4xl">{product.name}</h1>
         <p className="mt-3 text-2xl font-semibold tabular-nums">{formatPeso(product.price)}</p>
-        <p className="mt-5 leading-7 text-zinc-300">{product.description}</p>
+        <p className="mt-5 leading-7 text-black">{product.description}</p>
+        {product.seller && <p className="mt-3 text-sm text-black">Sold by {product.seller.name}</p>}
         <section className="product-detail-preview" aria-labelledby="sample-details-heading">
           <h2 id="sample-details-heading">Sample shopping details</h2>
           <dl>
@@ -59,10 +70,10 @@ function Product({ id }) {
           </dl>
         </section>
         <div className="product-detail-actions">
-          <Button type="button" disabled={!product.stock} onClick={() => add(product)}>
-            <ShoppingBag size={17} aria-hidden="true" /> Add to cart
+          <Button type="button" disabled={!product.stock || product.isOwner} onClick={() => add(product)}>
+            <ShoppingCart size={17} aria-hidden="true" /> {product.isOwner ? 'Your listing' : 'Add to cart'}
           </Button>
-          <span className="text-sm text-zinc-400">
+          <span className="text-sm text-black">
             {product.stock > 0 ? `${product.stock} in stock` : 'Out of stock'}
           </span>
         </div>

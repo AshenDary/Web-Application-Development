@@ -80,6 +80,8 @@ async function applyOrderWithoutTransactions(req) {
 
 router.post('/', requireAuth, validate(schema), async (req, res, next) => {
 	try {
+		const ownListing = await Product.exists({ _id: { $in: req.body.items.map((item) => item.productId) }, createdBy: req.user._id });
+		if (ownListing) return res.status(400).json({ message: "You can't buy your own listing" });
 		let order;
 
 		if (transactionsAvailable()) {

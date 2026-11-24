@@ -19,11 +19,19 @@ export function PixelFlame(props) {
   </PixelIcon>;
 }
 
-export function PixelBag(props) {
+export function PixelCart(props) {
   return <PixelIcon {...props}>
-    <path fill="#363b60" d="M5 2h6v1h1v3h2v8h-1v1H3v-1H2V6h2V3h1zm1 2v2h4V4z" fillRule="evenodd" />
-    <path fill="#a1a9dc" d="M3 7h10v7H3z" />
-    <path fill="#dfdff5" d="M4 8h8v1H4zm0 2h1v3H4z" />
+    <path fill="#363b60" d="M1 1h4v2h1v2h8v2h-1v6h-1v1H5v-1H4V7H3V3H1zm5 6v5h6V7zm0 7h2v1H6zm4 0h2v1h-2z" />
+    <path fill="#a1a9dc" d="M6 7h6v5H6z" />
+    <path fill="#dfdff5" d="M7 8h2v1H7zm3 0h1v1h-1zm-3 2h2v1H7zm3 0h1v1h-1z" />
+  </PixelIcon>;
+}
+
+export function PixelStore(props) {
+  return <PixelIcon {...props}>
+    <path fill="#363b60" d="M1 4h14v4h-1v7H2V8H1zm2 5v5h10V9zm1-7h8v2h2v1H2V4h2z" />
+    <path fill="#a1a9dc" d="M3 5h10v2H3zm1 4h3v5H4zm5 0h4v5H9z" />
+    <path fill="#dfdff5" d="M4 3h2v2H4zm4 0h2v2H8zm4 0h1v2h-1zm-7 7h1v3H5z" />
   </PixelIcon>;
 }
 

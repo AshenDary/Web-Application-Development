@@ -14,13 +14,22 @@ export default function HotDrops() {
   const { add } = useCart();
 
   useEffect(() => {
-    const controller = new AbortController();
-    api('/products/hot-drops', { signal: controller.signal })
-      .then(({ products }) => setItems(products))
-      .catch((requestError) => {
-        if (!controller.signal.aborted) setError(requestError.message);
-      });
-    return () => controller.abort();
+    let controller;
+    const fetchDrops = (background = false) => {
+      controller?.abort();
+      controller = new AbortController();
+      if (!background) setError('');
+      api('/products/hot-drops', { signal: controller.signal })
+        .then(({ products }) => { if (!controller.signal.aborted) setItems(products); })
+        .catch((requestError) => {
+          if (!background && !controller.signal.aborted) setError(requestError.message);
+        });
+    };
+    const refresh = () => { if (!document.hidden) fetchDrops(true); };
+    fetchDrops();
+    const timer = window.setInterval(refresh, 60000);
+    document.addEventListener('visibilitychange', refresh);
+    return () => { window.clearInterval(timer); document.removeEventListener('visibilitychange', refresh); controller?.abort(); };
   }, []);
 
   return (
@@ -34,7 +43,7 @@ export default function HotDrops() {
             {items.map((product) => (
               <li key={product._id} className="min-w-0">
                 <ProductCard product={product} onAdd={add}>
-                  <p className="mb-4 border-t border-zinc-800 pt-3 text-sm text-zinc-300">
+                  <p className="mb-4 border-t border-zinc-800 pt-3 text-sm text-black">
                     Ends <time dateTime={product.dropEndsAt}>{endTime.format(new Date(product.dropEndsAt))}</time>
                   </p>
                 </ProductCard>

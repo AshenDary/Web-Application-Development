@@ -10,7 +10,7 @@ export async function api(path, options = {}) {
 	try {
 		const response = await fetch(`${base}${path}`, {
 			credentials: 'include', ...requestOptions,
-			headers: { 'Content-Type': 'application/json', ...headers },
+			headers: { ...(options.body instanceof FormData ? {} : { 'Content-Type': 'application/json' }), ...headers },
 			signal: controller.signal,
 		});
 		const data = await response.json();
@@ -28,3 +28,4 @@ export async function api(path, options = {}) {
 	}
 }
 export const activity = (action, metadata = {}) => api('/activity', { method: 'POST', body: JSON.stringify({ action, metadata, sessionId: sessionStorage.getItem('stashSession') || crypto.randomUUID() }) }).catch(() => {});
+export const imageSrc = (url = '') => url.startsWith('/api/images/') ? `${base.replace(/\/api\/?$/, '')}${url}` : url;
