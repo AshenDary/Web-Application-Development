@@ -8,14 +8,14 @@ export const Input = (props) => <input className="control" {...props} />;
 export const Select = ({ children, ...props }) => <select className="control" {...props}>{children}</select>;
 export const Badge = ({ children, tone = 'default' }) => <span className="desktop-label" data-tone={tone}>{children}</span>;
 export const PageHeader = ({ title, eyebrow, icon: Icon, children }) => <div className="desktop-page-heading"><div>{eyebrow && <p className="eyebrow mb-1">{eyebrow}</p>}<h1 className="flex items-center gap-2 text-3xl font-semibold">{Icon && <Icon size={24} aria-hidden="true" />}{title}</h1></div>{children}</div>;
-export const Spinner = ({ label = 'Loading products…' }) => <div className="py-16 text-center text-zinc-400"><span className="inline-block h-7 w-7 desktop-loader animate-spin border-2"/><p className="mt-3 text-sm">{label}</p></div>;
-export const EmptyState = ({ children = 'Nothing to show.' }) => <div className="card grid min-h-48 place-items-center p-8 text-center"><div><PackageOpen className="mx-auto mb-3 text-zinc-500" size={32}/><p className="text-zinc-400">{children}</p></div></div>;
+export const Spinner = ({ label = 'Loading products…' }) => <div className="py-16 text-center text-black"><span className="inline-block h-7 w-7 desktop-loader animate-spin border-2"/><p className="mt-3 text-sm">{label}</p></div>;
+export const EmptyState = ({ children = 'Nothing to show.' }) => <div className="card grid min-h-48 place-items-center p-8 text-center"><div><PackageOpen className="mx-auto mb-3 text-black" size={32}/><p className="text-black">{children}</p></div></div>;
 export const ErrorMessage = ({ children }) => <p className="mb-5 desktop-error p-3.5 text-sm">{children}</p>;
 
 export const ProductCard = ({ product, onAdd, children, featured = false }) => {
   const stockText = product.stock === 0 ? 'Out of stock' : product.stock < 5 ? `${product.stock} left` : 'In stock';
   const stockTone = product.stock === 0 || product.stock < 5 ? 'warn' : 'good';
-  const heatTone = product.heat >= 85 ? 'text-rose-300' : product.heat >= 65 ? 'text-amber-200' : 'text-zinc-400';
+  const heatTone = 'text-black';
   return (
     <article className="card product-card">
       <div className="product-card-titlebar">
@@ -35,7 +35,7 @@ export const ProductCard = ({ product, onAdd, children, featured = false }) => {
           <span>{product.status ?? 'VERIFIED'}</span>
           {typeof product.heat === 'number' && <span className={heatTone}>HEAT {product.heat}</span>}
         </p>
-        <p className="line-clamp-2 text-sm leading-5 text-zinc-400">{product.description}</p>
+        <p className="line-clamp-2 text-sm leading-5 text-black">{product.description}</p>
         {children}
       </div>
       <div className="product-card-status">

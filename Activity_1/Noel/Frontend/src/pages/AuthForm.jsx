@@ -64,7 +64,7 @@ export default function AuthForm({ register = false }) {
                 <label htmlFor="auth-password" className="mb-2 block text-sm font-medium">Password</label>
                 <div className="relative">
                   <input id="auth-password" className={`${field} pr-12`} name="password" type={showPassword ? 'text' : 'password'} autoComplete={register ? 'new-password' : 'current-password'} minLength={8} required />
-                  <button type="button" aria-label={showPassword ? 'Hide password' : 'Show password'} onClick={() => setShowPassword((visible) => !visible)} className="absolute inset-y-1 right-1 grid w-10 place-items-center text-zinc-500 hover:bg-panel">
+                  <button type="button" aria-label={showPassword ? 'Hide password' : 'Show password'} onClick={() => setShowPassword((visible) => !visible)} className="absolute inset-y-1 right-1 grid w-10 place-items-center text-black hover:bg-panel">
                     {showPassword ? <EyeOff size={18} aria-hidden="true" /> : <Eye size={18} aria-hidden="true" />}
                   </button>
                 </div>
@@ -74,9 +74,9 @@ export default function AuthForm({ register = false }) {
                 {pending ? (register ? 'Creating account…' : 'Logging in…') : title}
               </button>
             </form>
-            <p className="mt-7 border-t border-line pt-5 text-center text-sm text-zinc-500">
+            <p className="mt-7 border-t border-line pt-5 text-center text-sm text-black">
               {register ? 'Already have an account?' : 'New to STASH?'}{' '}
-              <Link to={register ? '/login' : '/register'} state={location.state} className={`font-semibold text-zinc-100 underline underline-offset-4 ${focus}`}>
+              <Link to={register ? '/login' : '/register'} state={location.state} className={`font-semibold text-black underline underline-offset-4 ${focus}`}>
                 {register ? 'Log in' : 'Sign up'}
               </Link>
             </p>

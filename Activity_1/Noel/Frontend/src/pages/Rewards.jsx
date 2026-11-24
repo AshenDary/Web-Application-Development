@@ -55,14 +55,14 @@ export default function Rewards() {
             <h2 id="points-heading" className="rewards-heading">Street Cred balance</h2>
             <div className="mt-2 flex flex-wrap items-baseline justify-between gap-x-4 gap-y-2">
               <p className="text-4xl font-semibold tabular-nums tracking-tight">
-                {points.toLocaleString()} <span className="text-base font-normal text-zinc-400">pts</span>
+                {points.toLocaleString()} <span className="text-base font-normal text-black">pts</span>
               </p>
-              <p className="text-sm font-medium text-zinc-200">{currentTier?.name ?? 'Standard'}</p>
+              <p className="text-sm font-medium text-black">{currentTier?.name ?? 'Standard'}</p>
             </div>
             <div className="mt-5 h-1.5 overflow-hidden rounded-full bg-zinc-800" role="progressbar" aria-label="Progress toward next member tier" aria-valuenow={progress}>
               <div className="h-full bg-zinc-200" style={{ width: `${progress}%` }} />
             </div>
-            <p className="mt-3 text-sm text-zinc-400">
+            <p className="mt-3 text-sm text-black">
               {nextTier ? `${formatPoints(nextTier.threshold - points)} to ${nextTier.name}` : 'All member tiers unlocked'}
             </p>
           </section>

@@ -43,7 +43,7 @@ export default function HotDrops() {
             {items.map((product) => (
               <li key={product._id} className="min-w-0">
                 <ProductCard product={product} onAdd={add}>
-                  <p className="mb-4 border-t border-zinc-800 pt-3 text-sm text-zinc-300">
+                  <p className="mb-4 border-t border-zinc-800 pt-3 text-sm text-black">
                     Ends <time dateTime={product.dropEndsAt}>{endTime.format(new Date(product.dropEndsAt))}</time>
                   </p>
                 </ProductCard>
