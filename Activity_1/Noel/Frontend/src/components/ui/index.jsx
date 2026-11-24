@@ -1,5 +1,5 @@
 import { Link } from 'react-router-dom';
-import { PackageOpen, ShoppingBag } from 'lucide-react';
+import { PackageOpen, ShoppingCart } from 'lucide-react';
 import { formatPeso } from '../../lib/currency';
 import { PixelFile } from './PixelIcons';
 
@@ -40,7 +40,7 @@ export const ProductCard = ({ product, onAdd, children, featured = false }) => {
       </div>
       <div className="product-card-status">
         <Badge tone={stockTone}>{stockText}</Badge>
-        <Button disabled={!product.stock} onClick={() => onAdd(product)}><ShoppingBag size={15} aria-hidden="true" /> Add</Button>
+        <Button disabled={!product.stock} onClick={() => onAdd(product)}><ShoppingCart size={15} aria-hidden="true" /> Add</Button>
       </div>
     </article>
   );

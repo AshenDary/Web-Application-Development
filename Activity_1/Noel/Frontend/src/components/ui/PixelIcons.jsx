@@ -19,11 +19,11 @@ export function PixelFlame(props) {
   </PixelIcon>;
 }
 
-export function PixelBag(props) {
+export function PixelCart(props) {
   return <PixelIcon {...props}>
-    <path fill="#363b60" d="M5 2h6v1h1v3h2v8h-1v1H3v-1H2V6h2V3h1zm1 2v2h4V4z" fillRule="evenodd" />
-    <path fill="#a1a9dc" d="M3 7h10v7H3z" />
-    <path fill="#dfdff5" d="M4 8h8v1H4zm0 2h1v3H4z" />
+    <path fill="#363b60" d="M1 1h4v2h1v2h8v2h-1v6h-1v1H5v-1H4V7H3V3H1zm5 6v5h6V7zm0 7h2v1H6zm4 0h2v1h-2z" />
+    <path fill="#a1a9dc" d="M6 7h6v5H6z" />
+    <path fill="#dfdff5" d="M7 8h2v1H7zm3 0h1v1h-1zm-3 2h2v1H7zm3 0h1v1h-1z" />
   </PixelIcon>;
 }
 

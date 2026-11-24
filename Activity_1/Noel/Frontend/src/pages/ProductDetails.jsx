@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { ArrowLeft, RotateCcw, ShoppingBag, Star, Truck } from 'lucide-react';
+import { ArrowLeft, RotateCcw, ShoppingCart, Star, Truck } from 'lucide-react';
 import { Link, useParams } from 'react-router-dom';
 import { Badge, Button, ErrorMessage, Spinner } from '../components/ui';
 import { useCart } from '../context/CartContext';
@@ -69,7 +69,7 @@ function Product({ id }) {
         </section>
         <div className="product-detail-actions">
           <Button type="button" disabled={!product.stock} onClick={() => add(product)}>
-            <ShoppingBag size={17} aria-hidden="true" /> Add to cart
+            <ShoppingCart size={17} aria-hidden="true" /> Add to cart
           </Button>
           <span className="text-sm text-black">
             {product.stock > 0 ? `${product.stock} in stock` : 'Out of stock'}

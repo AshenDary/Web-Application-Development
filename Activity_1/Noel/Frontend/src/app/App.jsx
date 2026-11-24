@@ -1,5 +1,5 @@
 import { BrowserRouter, Link, Navigate, Outlet, Route, Routes, useLocation } from 'react-router-dom';
-import { PanelsTopLeft, ShoppingBag } from 'lucide-react';
+import { PanelsTopLeft, ShoppingCart } from 'lucide-react';
 import Navbar from '../components/layout/Navbar';
 import WindowTitle from '../components/layout/WindowTitle';
 import WindowStatus from '../components/layout/WindowStatus';
@@ -44,7 +44,7 @@ function ShopLayout() {
           <WindowStatus>
             <span><PanelsTopLeft size={14} aria-hidden="true" /> STASH / {title}</span>
             {page !== 'cart' && (
-              <Link to="/cart"><ShoppingBag size={14} aria-hidden="true" /> Cart ({items.reduce((total, item) => total + item.qty, 0)})</Link>
+              <Link to="/cart"><ShoppingCart size={14} aria-hidden="true" /> Cart ({items.reduce((total, item) => total + item.qty, 0)})</Link>
             )}
           </WindowStatus>
         </div>
