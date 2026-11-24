@@ -7,7 +7,7 @@ import { workspaceTabs } from '../components/layout/workspaceTabs';
 import useWindowMotion from '../components/layout/useWindowMotion';
 import { AuthProvider, useAuth } from '../context/AuthContext';
 import { CartProvider, useCart } from '../context/CartContext';
-import { AdminRoute, ProtectedRoute } from '../components/Routes';
+import { AdminRoute, ProtectedRoute, SellerRoute } from '../components/Routes';
 import ErrorBoundary from '../components/ErrorBoundary';
 import Marketplace from '../pages/Marketplace';
 import HotDrops from '../pages/HotDrops';
@@ -19,6 +19,8 @@ import Rewards from '../pages/Rewards';
 import Login from '../pages/Login';
 import Register from '../pages/Register';
 import Admin from '../pages/Admin';
+import SellerDashboard from '../pages/SellerDashboard';
+import SellerProductForm from '../pages/SellerProductForm';
 
 function Home() {
   const { user, loading } = useAuth();
@@ -32,7 +34,7 @@ function ShopLayout() {
   const { items } = useCart();
   const [, page, detail] = pathname.split('/');
   const { title, icon } = workspaceTabs[page] ?? { title: 'STASH' };
-  const centered = ['products', 'hot-drops', 'cart'].includes(page) || (page === 'orders' && !detail);
+  const centered = ['products', 'hot-drops', 'cart', 'seller'].includes(page) || (page === 'orders' && !detail);
 
   return (
     <div className={centered ? 'shop-layout shop-layout-centered' : 'shop-layout'}>
@@ -75,6 +77,11 @@ export default function App() {
                 </Route>
                 <Route element={<AdminRoute />}>
                   <Route path="/admin/:section" element={<Admin />} />
+                </Route>
+                <Route element={<SellerRoute />}>
+                  <Route path="/seller" element={<SellerDashboard />} />
+                  <Route path="/seller/new" element={<SellerProductForm />} />
+                  <Route path="/seller/:id/edit" element={<SellerProductForm />} />
                 </Route>
               </Route>
               <Route path="*" element={<Navigate to="/marketplace" replace />} />

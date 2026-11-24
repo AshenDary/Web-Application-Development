@@ -2,6 +2,7 @@ import { Link } from 'react-router-dom';
 import { PackageOpen, ShoppingCart } from 'lucide-react';
 import { formatPeso } from '../../lib/currency';
 import { PixelFile } from './PixelIcons';
+import { imageSrc } from '../../lib/api';
 
 export const Button = ({ children, variant = 'primary', ...props }) => <button className={variant === 'primary' ? 'btn-primary' : 'btn-secondary'} {...props}>{children}</button>;
 export const Input = (props) => <input className="control" {...props} />;
@@ -23,7 +24,7 @@ export const ProductCard = ({ product, onAdd, children, featured = false }) => {
         <Link to={`/products/${product._id}`} className="product-card-link">{product.name}</Link>
       </div>
       <div className="product-card-photo">
-        <img src={product.imageUrl} alt={product.name} />
+        <img src={imageSrc(product.imageUrl)} alt={product.name} />
         {featured && <span className="product-pick-sticker"><span><strong>STASH PICK!</strong></span></span>}
       </div>
       <div className="product-card-copy">
@@ -36,11 +37,12 @@ export const ProductCard = ({ product, onAdd, children, featured = false }) => {
           {typeof product.heat === 'number' && <span className={heatTone}>HEAT {product.heat}</span>}
         </p>
         <p className="line-clamp-2 text-sm leading-5 text-black">{product.description}</p>
+        {product.seller && <p className="text-sm text-black">Sold by {product.seller.name}</p>}
         {children}
       </div>
       <div className="product-card-status">
         <Badge tone={stockTone}>{stockText}</Badge>
-        <Button disabled={!product.stock} onClick={() => onAdd(product)}><ShoppingCart size={15} aria-hidden="true" /> Add</Button>
+        <Button disabled={!product.stock || product.isOwner} onClick={() => onAdd(product)}><ShoppingCart size={15} aria-hidden="true" /> {product.isOwner ? 'Your listing' : 'Add'}</Button>
       </div>
     </article>
   );

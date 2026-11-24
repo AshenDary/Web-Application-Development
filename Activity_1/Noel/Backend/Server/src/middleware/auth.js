@@ -31,3 +31,6 @@ export async function optionalAuth(req, res, next) {
 export const requireAdmin = (req, res, next) => (
 	req.user?.role === 'admin' ? next() : res.status(403).json({ message: 'Admin access required' })
 );
+export const requireSeller = (req, res, next) => (
+	req.user?.role === 'seller' ? next() : res.status(403).json({ message: 'Seller access required' })
+);

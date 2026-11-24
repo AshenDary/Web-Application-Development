@@ -24,13 +24,13 @@ export default function AuthForm({ register = false }) {
   async function submit(event) {
     event.preventDefault();
     if (pending) return;
-    const { name, email, password } = Object.fromEntries(new FormData(event.currentTarget));
+    const { name, email, password, role } = Object.fromEntries(new FormData(event.currentTarget));
     setError('');
     setPending(true);
     try {
-      if (register) await signUp({ name, email, password });
-      else await login({ email, password });
-      navigate(location.state?.from || '/marketplace', { replace: true });
+      if (register) await signUp({ name, email, password, role });
+      else await login({ email, password, role });
+      navigate(!register && role === 'seller' ? '/seller' : (location.state?.from || '/marketplace'), { replace: true });
     } catch (requestError) {
       setError(requestError.message);
     } finally {
@@ -56,6 +56,7 @@ export default function AuthForm({ register = false }) {
                 <span>Name</span>
                 <input className={field} name="name" autoComplete="name" minLength={2} required />
               </label>}
+              <fieldset className="space-y-2 text-sm font-medium"><legend>{register ? 'I want to:' : 'Log in as:'}</legend><div className="flex gap-3"><label className="control flex items-center gap-2"><input type="radio" name="role" value="user" defaultChecked /> Buyer</label><label className="control flex items-center gap-2"><input type="radio" name="role" value="seller" /> Seller</label></div></fieldset>
               <label className="block space-y-2 text-sm font-medium">
                 <span>Email</span>
                 <input className={field} name="email" type="email" autoComplete={register ? 'email' : 'username'} required />

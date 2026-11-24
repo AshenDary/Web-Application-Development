@@ -1,4 +1,4 @@
-import { PixelCart, PixelClipboard, PixelFile, PixelFlame, PixelFolder, PixelGear } from '../ui/PixelIcons';
+import { PixelCart, PixelClipboard, PixelFile, PixelFlame, PixelFolder, PixelGear, PixelStore } from '../ui/PixelIcons';
 import PixelStar from '../ui/PixelStar';
 
 export const workspaceTabs = {
@@ -9,4 +9,5 @@ export const workspaceTabs = {
   products: { title: 'Product Details', icon: PixelFile },
   orders: { title: 'Transfers', icon: PixelClipboard },
   admin: { title: 'Admin Console', icon: PixelGear },
+  seller: { title: 'Seller Center', icon: PixelStore },
 };

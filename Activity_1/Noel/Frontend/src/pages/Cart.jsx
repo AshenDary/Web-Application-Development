@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import { ArrowLeft, Minus, Plus, Trash2 } from 'lucide-react';
 import { Link, useNavigate } from 'react-router-dom';
 import { api } from '../lib/api';
+import { imageSrc } from '../lib/api';
 import { useAuth } from '../context/AuthContext';
 import { useCart } from '../context/CartContext';
 import { Button, EmptyState, ErrorMessage, PageHeader } from '../components/ui';
@@ -15,7 +16,7 @@ function CartItem({ item, disabled, onSelect, onUpdate, onRemove }) {
       <div className="cart-product">
         <input type="checkbox" aria-label={`Select ${item.name}`} checked={item.selected !== false} disabled={disabled} onChange={(event) => onSelect([item._id], event.target.checked)} />
         <Link to={`/products/${item._id}`} className="cart-product-link">
-          <img src={item.imageUrl} alt="" />
+          <img src={imageSrc(item.imageUrl)} alt="" />
           <span><strong>{item.name}</strong><small>{item.category}</small></span>
         </Link>
       </div>

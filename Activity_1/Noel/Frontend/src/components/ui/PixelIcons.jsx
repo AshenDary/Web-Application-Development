@@ -27,6 +27,14 @@ export function PixelCart(props) {
   </PixelIcon>;
 }
 
+export function PixelStore(props) {
+  return <PixelIcon {...props}>
+    <path fill="#363b60" d="M1 4h14v4h-1v7H2V8H1zm2 5v5h10V9zm1-7h8v2h2v1H2V4h2z" />
+    <path fill="#a1a9dc" d="M3 5h10v2H3zm1 4h3v5H4zm5 0h4v5H9z" />
+    <path fill="#dfdff5" d="M4 3h2v2H4zm4 0h2v2H8zm4 0h1v2h-1zm-7 7h1v3H5z" />
+  </PixelIcon>;
+}
+
 export function PixelFile(props) {
   return <PixelIcon {...props}>
     <path fill="#34486b" d="M3 1h7v1h1v1h1v1h1v11H3z" />

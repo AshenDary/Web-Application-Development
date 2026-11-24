@@ -4,6 +4,7 @@ import { Link, useParams } from 'react-router-dom';
 import { Badge, Button, ErrorMessage, Spinner } from '../components/ui';
 import { useCart } from '../context/CartContext';
 import { activity, api } from '../lib/api';
+import { imageSrc } from '../lib/api';
 import { formatPeso } from '../lib/currency';
 
 const sampleDetails = [
@@ -46,7 +47,7 @@ function Product({ id }) {
   return (
     <article className="card product-detail">
       <div className="product-detail-photo">
-        <img src={product.imageUrl} alt={product.name} />
+        <img src={imageSrc(product.imageUrl)} alt={product.name} />
       </div>
       <div className="product-detail-copy">
         <div className="flex flex-wrap items-center gap-3 text-sm text-black">
@@ -56,6 +57,7 @@ function Product({ id }) {
         <h1 className="mt-3 text-3xl font-semibold tracking-tight sm:text-4xl">{product.name}</h1>
         <p className="mt-3 text-2xl font-semibold tabular-nums">{formatPeso(product.price)}</p>
         <p className="mt-5 leading-7 text-black">{product.description}</p>
+        {product.seller && <p className="mt-3 text-sm text-black">Sold by {product.seller.name}</p>}
         <section className="product-detail-preview" aria-labelledby="sample-details-heading">
           <h2 id="sample-details-heading">Sample shopping details</h2>
           <dl>
@@ -68,8 +70,8 @@ function Product({ id }) {
           </dl>
         </section>
         <div className="product-detail-actions">
-          <Button type="button" disabled={!product.stock} onClick={() => add(product)}>
-            <ShoppingCart size={17} aria-hidden="true" /> Add to cart
+          <Button type="button" disabled={!product.stock || product.isOwner} onClick={() => add(product)}>
+            <ShoppingCart size={17} aria-hidden="true" /> {product.isOwner ? 'Your listing' : 'Add to cart'}
           </Button>
           <span className="text-sm text-black">
             {product.stock > 0 ? `${product.stock} in stock` : 'Out of stock'}
